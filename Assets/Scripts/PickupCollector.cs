@@ -35,6 +35,8 @@ public class PickupCollector : MonoBehaviour
             PlayerPrefs.SetInt("PickupsCollected", pickupsCollected);
 
             hudController.UpdatePickupsUI(pickupsCollected);
+
+            //countdownTimer.AddTimeOnPickup();
         }
     }
 }

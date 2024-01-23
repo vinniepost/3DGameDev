@@ -13,12 +13,24 @@ public class FirstPersonController : MonoBehaviour
     private float verticalLookRotation = 0f;
     private bool isGrounded;
 
+    private bool isPaused = false;
+    public GameObject pauseScreen;
+
     void Start()
     {
         PlayerPrefs.DeleteAll();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         playerCamera = GetComponentInChildren<Camera>();
+        if (pauseScreen == null)
+        {
+            Debug.LogError("Pause Screen not assigned properly!");
+        }
+        else
+        {
+            // Disable the pause screen at the start
+            pauseScreen.SetActive(false);
+        }
     }
 
     void Update()
@@ -60,12 +72,39 @@ public class FirstPersonController : MonoBehaviour
 
         playerCamera.transform.localRotation = Quaternion.Euler(verticalLookRotation, 0f, 0f);
         transform.Rotate(Vector3.up * mouseX);
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            TogglePause();
+        }
     }
 
     void Jump()
     {
         GetComponent<Rigidbody>().velocity = new Vector3(0f, jumpForce, 0f);
         isGrounded = false;
+    }
+
+    void TogglePause()
+    {
+        isPaused = !isPaused;
+        pauseScreen.SetActive(isPaused);
+
+        
+
+
+        if (isPaused)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            Time.timeScale = 0f;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            Time.timeScale = 1f;
+        }
     }
 
     private void OnCollisionStay(Collision collision)
